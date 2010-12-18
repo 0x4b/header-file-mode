@@ -1,0 +1,21 @@
+
+* header-file-mode
+
+A major mode that, when associated with the .h file extension, will put those file into the major mode of their corresponding implementation file.
+
+*** Installation and Usage
+
++ Put lisp/header-file-mode.el somewhere in your load path.
++ Make it load by
+  - Requiring it all the time by adding to your emacs init file
+    (require header-file-mode)
+  - Make it autoload  by adding to your emacs init file 
+    (autoload 'header-file-mode "header-file-mode")
++ Add an entry to auto-mode-alist
+  (cons "\\.h$" 'header-file-mode)
+
+*** Contents
+README.org - this file
+
+***** lisp
+Emacs lisp source code
