@@ -5,7 +5,24 @@
 
 ;; This file is *not* a part of GNU Emacs.
 
+;;; License
+
+;; This program is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 2 of the License, or (at your option)
+;; any later version.
+
+;; This program is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+;; more details.
+
+;; You should have received a copy of the GNU General Public License along with
+;; this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+;; Place - Suite 330, Boston, MA 02111-1307, USA.
+
 ;;; Commentary:
+
 ;; By assigning header-file-mode to .h files in auto-mode-alist, header files
 ;; we be opened in the mode used by the corresponding implementation file (as
 ;; determined by the `find-file' package). If a corresponding file cannot be
@@ -14,6 +31,8 @@
 
 ;;; Code:
 (require 'find-file)
+
+(defconst header-file-mode-version "0.2" "Version of `header-file-mode'.")
 
 (defcustom header-file-default-mode
   'c-mode
@@ -39,8 +58,9 @@ used for a matching file (see `ff-other-file-name')."
                           auto-mode-alist
                           (lambda (re other-file) (string-match re other-file))
                           nil)
-           (or (cdr (assoc 'header-file-default-mode
-                           dir-local-variables-alist))
+           (or (and (boundp 'file-local-variables-alist)
+                    (cdr (assoc 'header-file-default-mode
+                                file-local-variables-alist)))
                header-file-default-mode))))))
 
 (provide 'header-file)
