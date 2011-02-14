@@ -61,6 +61,7 @@ used for a matching file (see `ff-other-file-name')."
            (or (and (boundp 'file-local-variables-alist)
                     (cdr (assoc 'header-file-default-mode
                                 file-local-variables-alist)))
-               header-file-default-mode))))))
+               header-file-default-mode)))))
+  (run-mode-hooks))
 
 (provide 'header-file)
