@@ -48,20 +48,29 @@ The value can be set as a directory local variable like:
 ;;;###autoload
 (defun header-file-mode ()
   "Major mode to select header file major mode based on the mode
-used for a matching file (see `ff-other-file-name')."
+used for a matching file (see `ff-find-the-other-file')."
   (interactive)
   (hack-dir-local-variables)
-  (let ((ff-ignore-include t))          ; don't use #include lines...
+  (let ((ff-ignore-include t) ; Don't use #include lines
+        (ff-always-try-to-create nil)) ; Don't try to create the file if it does not exist.
     (delay-mode-hooks
       (funcall
-       (or (assoc-default (or (ff-other-file-name) "")
-                          auto-mode-alist
-                          (lambda (re other-file) (string-match re other-file))
-                          nil)
-           (or (and (boundp 'file-local-variables-alist)
-                    (cdr (assoc 'header-file-default-mode
-                                file-local-variables-alist)))
-               header-file-default-mode)))))
+       (or
+        ;; Try to determine the major mode of the corresponding implementation file.
+        ;; Monkey-patch `ff-get-file' so that `ff-find-the-other-file' does not
+        ;; visit the file, and only returns the filename.
+        (cl-letf (((symbol-function 'ff-get-file)
+                   (lambda (search-dirs filename &optional suffix-list other-window)
+                     (ff-get-file-name search-dirs filename suffix-list))))
+          (assoc-default (or (ff-find-the-other-file) "")
+                         auto-mode-alist
+                         (lambda (re other-file) (string-match re other-file))
+                         nil))
+        ;; Fall back to the value of `header-file-default-mode'.
+        (or (and (boundp 'file-local-variables-alist)
+                 (cdr (assoc 'header-file-default-mode
+                             file-local-variables-alist)))
+            header-file-default-mode)))))
   (run-mode-hooks))
 
 (provide 'header-file)
