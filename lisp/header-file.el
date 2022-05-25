@@ -31,6 +31,7 @@
 
 ;;; Code:
 (require 'find-file)
+(require 'cl-macs)
 
 (defconst header-file-mode-version "0.2" "Version of `header-file-mode'.")
 
